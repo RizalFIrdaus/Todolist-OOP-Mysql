@@ -28,7 +28,7 @@ Modified Config file database in /Config/Database.
 If your database successfull connected, log will feedback "Berhasil Terhubung"
 
 ```shell
- cd(Your Director)/Test
+ cd (Your Director)/Test
  php .\ConnectionDBTest.php
 ```
 
