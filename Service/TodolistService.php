@@ -25,7 +25,7 @@ class todolistServiceImp implements todolistService
     {
         echo "=============================================" . PHP_EOL;
         foreach ($this->todolistRepoImp->findAll() as $number => $value) {
-            echo "$number. " . $value->getTodo() . PHP_EOL;
+            echo "{$value->getId()}. "  . $value->getTodo() . PHP_EOL;
         }
     }
     public function addTodolist(string $todo): void
