@@ -7,7 +7,7 @@ class TodoList
     private int $id;
     private string $todolist;
 
-    public function __construct(string $todolist)
+    public function __construct(string $todolist = "")
     {
         $this->todolist = $todolist;
     }

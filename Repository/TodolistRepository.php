@@ -2,9 +2,6 @@
 
 namespace Repository;
 
-require_once __DIR__ . "/../Entity/Todolist.php";
-
-
 use Entity\TodoList;
 
 
@@ -17,28 +14,49 @@ interface TodolistRepo
 
 class TodolistRepoImp implements TodolistRepo
 {
-    public array $todoList = array();
+
+    private \PDO $connection;
+
+    public function __construct(\PDO $connection)
+    {
+        $this->connection = $connection;
+    }
 
     public function save(TodoList $todoList): void
     {
-        $num = sizeof($this->todoList) + 1;
-        $this->todoList[$num] = $todoList;
+        $sql = "INSERT INTO todolist(todo) VALUES(?);";
+        $st = $this->connection->prepare($sql);
+        $st->execute([$todoList->getTodo()]);
     }
     public function remove(int $number): bool
     {
-        if ($number > sizeof($this->todoList)) {
+        $sql = "SELECT id FROM todolist WHERE id= ?;";
+        $st = $this->connection->prepare($sql);
+        $st->execute([$number]);
+
+        if ($st->fetch()) {
+            $sql = "DELETE FROM todolist WHERE id = ?;";
+            $st = $this->connection->prepare($sql);
+            $st->execute([$number]);
+            return true;
+        } else {
+            // Tidak ada todolist dengan id yang di input
             return false;
         }
-
-        for ($i = $number; $i < sizeof($this->todoList); $i++) {
-            $this->todoList[$i] = $this->todoList[$i + 1];
-        }
-
-        unset($this->todoList[sizeof($this->todoList)]);
-        return true;
     }
     public function findAll(): array
     {
-        return $this->todoList;
+        $result = [];
+        $sql = "SELECT * FROM todolist;";
+        $st = $this->connection->prepare($sql);
+        $st->execute();
+
+        foreach ($st as $row) {
+            $todoList = new TodoList();
+            $todoList->setId($row["id"]);
+            $todoList->setTodo($row["todo"]);
+            $result[] = $todoList;
+        }
+        return $result;
     }
 }
